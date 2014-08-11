@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- <script type="text/javascript" src='http://code.jquery.com/jquery-2.1.1.min.js'></script> -->
+<script type="text/javascript" src='jquery.js'></script>
+<script type="text/javascript" src='i18n.js'></script>
+<body>
+
+<h1>My First Heading</h1>
+
+<h1>My First Heading</h1>
+
+<!-- <p id ='a'>My first paragraph.</p>
+<p id ='b'>My first paragraph.</p>
+<p id ='c'>My first paragraph.</p>
+<p id ='d'>My first paragraph.</p>
+<p id ='e'>My first paragraph.</p>
+<p id ='f'>My first paragraph.</p>
+<p id ='g'>My first paragraph.</p>
+<p id ='h'>My first paragraph.</p>
+<p id ='i'>My first paragraph.</p>
+<p id ='j'>My first paragraph.</p>
+ -->
+<script typr="text/javascript">
+	$( document ).ready(function() {
+	  // $('#a').text((function(d){return "Your "+i18n.p(d,"NUM",0,{"one":"message","other": i18n.v(d,"NUM")+" messages"})+" go here."})({"NUM":"4"}));
+	  // $('#b').text((function(d){return "Ja this is you mr "+i18n.v(d,"Name")})({"Name":"Tomasdfas"}));
+	  // $('#c').text((function(d){return "Ja this is you mr"})());
+	  // $('#d').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"0"}));
+	  // $('#e').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"1"}));
+	  // $('#f').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"2"}));
+	  // $('#g').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"3"}));
+	  // $('#h').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"11"}));
+	  // $('#i').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"15"}));
+	  // $('#j').text((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"50"}));
+
+	  	console.log((function(d){return "Your "+i18n.v(d,"NUM")+" "+i18n.p(d,"NUM",0,{"one":"message","other":"messages"})+" go here."})({"NUM":"6"}));
+		console.log((function(d){return "Ja this is you mr "+i18n.v(d,"Name")})({"Name":"Tomasdfas"}));
+		console.log('Ja this is you mr');
+		console.log((function(d){return i18n.p(d,"NUM",0,{"zero":"There are zero - in a lang that needs it.","one":"There is one - in a lang that has it.","two":"There is two - in a lang that has it.","few":"There are a few - in a lang that has it.","many":"There are many - in a lang that has it.","other":"There is a different amount than all the other stuff above."})})({"NUM":"5"}));
+		console.log((function(d){return "You "+i18n.p(d,"NUM_ADDS",1,{"0":"didnt add this to your profile","zero":"added this to your profile","one":"and one other person added this to their profile","other":"and "+i18n.n(d,"NUM_ADDS",1)+" others added this to their profiles"})+"."})({"NUM_ADDS":"0"}));
+		console.log((function(d){return "You "+i18n.p(d,"NUM_ADDS",1,{"0":"didnt add this to your profile","zero":"added this to your profile","one":"and one other person added this to their profile","other":"and "+i18n.n(d,"NUM_ADDS",1)+" others added this to their profiles"})+"."})({"NUM_ADDS":"1"}));
+		console.log((function(d){return "You "+i18n.p(d,"NUM_ADDS",1,{"0":"didnt add this to your profile","zero":"added this to your profile","one":"and one other person added this to their profile","other":"and "+i18n.n(d,"NUM_ADDS",1)+" others added this to their profiles"})+"."})({"NUM_ADDS":"2"}));
+		console.log((function(d){return "You "+i18n.p(d,"NUM_ADDS",1,{"0":"didnt add this to your profile","zero":"added this to your profile","one":"and one other person added this to their profile","other":"and "+i18n.n(d,"NUM_ADDS",1)+" others added this to their profiles"})+"."})({"NUM_ADDS":"3"}));
+	  
+	// function Animal(name) { 
+	// 	this.name = name;
+	// };
+	// Animal.prototype.move = function(meters) {
+	// 	console.log(this.name+" moved "+meters+"m."); 
+	// };
+	
+	// function Snake() {
+	// 	Animal.apply(this, Array.prototype.slice.call(arguments));
+	// };
+	// Snake.prototype = new Animal();
+	// Snake.prototype.move = function() {
+	// 	console.log("Slit hering...");
+	// 	Animal.prototype.move.call(this, 5); 
+	// };
+	// var sam = new Snake("Sammy the Python");
+	// sam.move();
+	
+
+	// });
+	
+
+</script>
+
+</body>
+</html>
