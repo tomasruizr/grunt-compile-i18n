@@ -1,6 +1,6 @@
 {
     "this is a sentence to be translated in the html file 5": {
-        "translation": "Esta oracion la traduje",
+        "translation": "Esta oracion la traduje html 5",
         "translated": 1,
         "deleted": 0
     },
@@ -25,8 +25,8 @@
         "deleted": 1
     },
     "Your {NUM} {NUM, plural, one{message} other{messages}} go here.": {
-        "translation": "Your {NUM} {NUM, plural, one{message} other{messages}} go here.",
-        "translated": 0,
+        "translation": "{NUM, plural, one{Tu} other{Tus {NUM}}} {NUM, plural, one{mensaje} other{mensajes}} {NUM, plural, one{va} other{van}} aqui.",
+        "translated": 1,
         "deleted": 0
     },
     "this is a subdir tomas": {

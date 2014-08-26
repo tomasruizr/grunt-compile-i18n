@@ -97,6 +97,7 @@ module.exports = function(grunt) {
 		    fs.writeFileSync( path.join(this.files[0].dest, lang, lang + '.json'), 
 		    	JSON.stringify(langLocals,null,4));
 		    var count = Object.keys(langLocals).length;
+		    grunt.log.writeln('Locale: ' + lang);
 		    grunt.log.writeln('Strings to Translate found: ' + NDlangLocals.length);
 		    grunt.log.writeln('Strings to Translate marked to be deleted: ' + (count - NDlangLocals.length));
 		};

@@ -12,25 +12,40 @@ var i18n = require('./../i18n.js');
 var path = require('path');
 var processor = require('./compilerProcessor.js');
 var fs = require('fs-extra');
+var _ = require('lodash');
 
 module.exports = function(grunt) {
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
     grunt.registerMultiTask('compile_i18n', 'Creates folders for scripts/templates for every language supported in the application.', function() {
-        grunt.log.writeln('compiling...');
         var p = new processor();
         var options = this.options({
             openLocalizationTag : '<%', 
             closeLocalizationTag : '%>', 
             localizationFunction : '__',
-            markedOnly : false,
+            markedOnly : true,
             localesFolder: './locales',
             defaultPlurals : {
                 fewLimit : '10',
                 manyLimit : '20'
             },
-            
+            /**
+             * Default Callback function to call specifying what to do to
+             *         process the localization. it can be overrided in the
+             *         options of the gruntFile.
+             *
+             * @method callbackFunction
+             *
+             * @param  {string}         str   the string to be localized
+             * @param  {object}         data  the object representing the data
+             *         that's going to be passed as parameters to the
+             *         localization function in the client side.
+             * @param  {bool}         quote whether to quote the values or not.
+             *
+             * @return {string}               The string to be puted in place of
+             *         the localization string.
+             */
             callbackFunction : function(str, data, quote) {
                 quote = quote | false;
                 var i18n = new i18nCompiler('en');
@@ -61,17 +76,23 @@ module.exports = function(grunt) {
             });
         });
         //iterating the folders for each localization           
-        var localesFolder = fs.readdirSync(options.localesFolder);
-        // var localesFolder = fs.readdirSync(this.files[0].dest);
-        // For Each Locale folder in destination.
-        for (var lc = 0; lc < localesFolder.length; lc++) {
-            var lang = localesFolder[lc];
-            var langFolder = path.join(this.files[0].dest, lang);
+        var localesFolderDir = fs.readdirSync(options.localesFolder);
+        // iterate each locale folder
+        for (var lc = 0; lc < localesFolderDir.length; lc++) {
+            var lang = localesFolderDir[lc];
+            var destLangFolder = path.join(this.files[0].dest, lang);
+            
+            //Report progress to console.
+            grunt.log.writeln('Compiling language: ' + lang + ' in the folder: ' + destLangFolder);
+            
+
             //ensure the folder exists or create it.
-            fs.ensureDirSync(langFolder);
-            var stat = fs.statSync(langFolder);
+            fs.ensureDirSync(destLangFolder);
+            var stat = fs.statSync(destLangFolder);
             if (stat && stat.isDirectory()) {
+                var replacesCount = 0;
                 var locales = JSON.parse(fs.readFileSync(path.join(options.localesFolder, lang, lang + '.json'), 'utf8'));
+                
                 var fileStr = '';
                 var fileName = '';
                 // var newFile = '';   
@@ -88,27 +109,34 @@ module.exports = function(grunt) {
                             var localeStr = p.purifyLocal(rawLocaleArr[1]);
                             //Data of the sentence if it exists
                             var localeData = p.purifyData(rawLocaleArr[1]);
-                            //Validates the option of translate only marked as translated strings
-                            var tValue = options.callbackFunction(locales[localeStr].translation, localeData, path.extname(fileName) == '.js');
                             //Ignore if only translating the Marked As Translated Strings and is falase.
                             if (options.markedOnly && !locales[localeStr].translated){
+                                fileStr = p.replaceAll(fileStr, rawLocaleArr[0], rawLocaleArr[1]);
                                 continue;
                             }
                             //translated Value.
+                            var tValue = options.callbackFunction(locales[localeStr].translation, localeData, path.extname(fileName) == '.js');
+                            
+                            replacesCount += p.countReplaces(fileStr, rawLocaleArr[1], tValue);
                             fileStr = p.replaceAll(fileStr, rawLocaleArr[0], tValue);
                             
                         }
                     });
-                    fs.ensureDirSync(path.dirname(path.join(langFolder, fileName)));
-                    fs.writeFileSync(path.join(langFolder, fileName), fileStr);
+                    fs.ensureDirSync(path.dirname(path.join(destLangFolder, fileName)));
+                    fs.writeFileSync(path.join(destLangFolder, fileName), fileStr);
                     
                 }
+                //Report Totals
+                //Filter only the locals that are translated
+                    
+                grunt.log.writeln('Total of translated strings to replace: ' + Object.keys(_.pick(locales, function(value, key){return value.translated;})).length);
+                grunt.log.writeln('Total of ocurrences replaced: ' + replacesCount);
                 // write a custom js for the client in this lang.
                 if (options.plurals && options.plurals[lang]){
-                    fs.writeFileSync(path.join(langFolder, 'i18n.js'), i18n.functions(options.plurals[lang].fewLimit, options.plurals[lang].manyLimit));
+                    fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.plurals[lang].fewLimit, options.plurals[lang].manyLimit));
                 }
                 else{
-                    fs.writeFileSync(path.join(langFolder, 'i18n.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
+                    fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
                 }
             }
         }

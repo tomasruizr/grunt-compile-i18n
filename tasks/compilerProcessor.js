@@ -3,7 +3,6 @@ var fs = require('fs-extra');
 var path = require('path');
 module.exports = compilerProcessor;
 	function compilerProcessor() {
-		
 	};
   	
 
@@ -79,7 +78,15 @@ module.exports = compilerProcessor;
 	compilerProcessor.prototype.escapeRegExp = function (string) {
     	return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 	}
-
+	compilerProcessor.prototype.countReplaces = function(string, find, replace){
+		var res = string.match(new RegExp(this.escapeRegExp(find), 'g'));
+		if (res) {
+			return res.length;
+		}
+		else {
+			return 0;
+		}
+	}
 	compilerProcessor.prototype.replaceAll = function (string, find, replace) {
   		return string.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
 	}
