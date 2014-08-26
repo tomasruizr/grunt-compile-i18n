@@ -22,7 +22,6 @@
     }
   ],
   "preferGlobal": true,
-  "bin": "bin/grunt-init",
   "engines": {
     "node": ">= 0.8.0"
   },
