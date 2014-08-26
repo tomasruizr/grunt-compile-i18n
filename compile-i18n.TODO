@@ -1,4 +1,4 @@
-pendientes:
+pendientes: 
  ☐ @i18nCompiler, @sails, Arreglar los permisos de acceso para las carpetas creadas dentro de la nueva carpeta de localización.
  ☐ @i18nCompiler, ver como pasar argumentos en el grunt file para compilar una local determinada unicamente.
  ✔ @i18nCompiler, Forzar compilacion en caso de que no encuentre el  string. @done (14-08-11 19:11): Lo resolvi en el gruntfile. ver si hay una mejor manera de no depender de la configuración sino hacerlo por convención
