@@ -18,12 +18,14 @@ module.exports = function(grunt) {
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
     grunt.registerMultiTask('compile_i18n', 'Creates folders for scripts/templates for every language supported in the application.', function() {
-        console.log('estoy en el compile');
+        grunt.log.writeln('compiling...');
         var p = new processor();
         var options = this.options({
             openLocalizationTag : '<%', 
             closeLocalizationTag : '%>', 
             localizationFunction : '__',
+            markedOnly : false,
+            localesFolder: './locales',
             defaultPlurals : {
                 fewLimit : '10',
                 manyLimit : '20'
@@ -59,14 +61,17 @@ module.exports = function(grunt) {
             });
         });
         //iterating the folders for each localization           
-        var localeFolders = fs.readdirSync(this.files[0].dest);
+        var localesFolder = fs.readdirSync(options.localesFolder);
+        // var localesFolder = fs.readdirSync(this.files[0].dest);
         // For Each Locale folder in destination.
-        for (var lc = 0; lc < localeFolders.length; lc++) {
-            var lang = localeFolders[lc];
+        for (var lc = 0; lc < localesFolder.length; lc++) {
+            var lang = localesFolder[lc];
             var langFolder = path.join(this.files[0].dest, lang);
+            //ensure the folder exists or create it.
+            fs.ensureDirSync(langFolder);
             var stat = fs.statSync(langFolder);
             if (stat && stat.isDirectory()) {
-                var locales = JSON.parse(fs.readFileSync(path.join(langFolder, lang + '.json'), 'utf8'));
+                var locales = JSON.parse(fs.readFileSync(path.join(options.localesFolder, lang, lang + '.json'), 'utf8'));
                 var fileStr = '';
                 var fileName = '';
                 // var newFile = '';   
@@ -83,8 +88,13 @@ module.exports = function(grunt) {
                             var localeStr = p.purifyLocal(rawLocaleArr[1]);
                             //Data of the sentence if it exists
                             var localeData = p.purifyData(rawLocaleArr[1]);
-                            //translated Value.
+                            //Validates the option of translate only marked as translated strings
                             var tValue = options.callbackFunction(locales[localeStr].translation, localeData, path.extname(fileName) == '.js');
+                            //Ignore if only translating the Marked As Translated Strings and is falase.
+                            if (options.markedOnly && !locales[localeStr].translated){
+                                continue;
+                            }
+                            //translated Value.
                             fileStr = p.replaceAll(fileStr, rawLocaleArr[0], tValue);
                             
                         }
@@ -101,7 +111,8 @@ module.exports = function(grunt) {
                     fs.writeFileSync(path.join(langFolder, 'i18n.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
                 }
             }
-        }    
+        }
+        grunt.log.writeln('Process Complete!!.');    
     });
 
 };

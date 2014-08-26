@@ -2,8 +2,13 @@ var processor = require('./compilerProcessor.js');
 var fs = require('fs-extra');
 var path = require('path');
 module.exports = function(grunt) {
+	/**
+	 * Task that fetch all the strings to be localized and puts them in a locales folder orgenized by languages.
+	 *
+	 * @method
+	 */
 	grunt.registerMultiTask('fetchStrings_i18n', 'Creates folders for scripts/templates for every language supported in the application.', function() {
-		console.log('estoy en el fetch');
+		grunt.log.writeln('fetching localization strings...');
     	var options = this.options({
 	        openLocalizationTag : '<%', 
 	        closeLocalizationTag : '%>', 
@@ -12,14 +17,15 @@ module.exports = function(grunt) {
           	],
         
       	});  
-
     	var p = new processor();
     	var src= new Array();
     	var langLocals= new Array();
-    	/*
-    	Not Deleted Locals. Array storing the locals that are preset in the source file,
-    	if the local is not here and it is in the existing locales file, will be marked
-    	as deleted.
+    	/**
+    	 * Not Deleted Locals. Array storing the locals that are preset in the
+    	 *         source file, if the local is not here and it is in the
+    	 *         existing locales file, will be marked as deleted.
+    	 *
+    	 * @type {Array}
     	 */
     	var NDlangLocals= new Array();
 
@@ -30,7 +36,7 @@ module.exports = function(grunt) {
     	
 	    	//Validates if the folder exists or create it.
 	    	if (!fs.existsSync(path.join(this.files[0].dest, lang))){
-    			fs.mkdirSync(path.join(this.files[0].dest, lang));
+    			fs.ensureDirSync(path.join(this.files[0].dest, lang));
 	    	}
 	    	//validates if the localization file exist or initialize it to an empty object.
 	    	if (fs.existsSync(path.join(this.files[0].dest, lang, lang + '.json'))){
@@ -90,6 +96,9 @@ module.exports = function(grunt) {
 		    langLocals = p.markDeletedLocales(langLocals, NDlangLocals);
 		    fs.writeFileSync( path.join(this.files[0].dest, lang, lang + '.json'), 
 		    	JSON.stringify(langLocals,null,4));
+		    var count = Object.keys(langLocals).length;
+		    grunt.log.writeln('Strings to Translate found: ' + NDlangLocals.length);
+		    grunt.log.writeln('Strings to Translate marked to be deleted: ' + (count - NDlangLocals.length));
 		};
 	});
 };

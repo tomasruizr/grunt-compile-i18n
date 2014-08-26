@@ -35,7 +35,7 @@ module.exports = function(grunt) {
           './pruebaDest' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
         },
         options : {
-          
+          localesFolder: './locales'
           //callbackFunction : function(str, data){console.log(str);}
         }
       }
@@ -45,7 +45,7 @@ module.exports = function(grunt) {
     fetchStrings_i18n: {
       generate : {
         files: {
-          './pruebaDest' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
+          './locales' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
         },
         options : {
           openLocalizationTag : '<%', 
