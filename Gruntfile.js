@@ -25,15 +25,32 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['tmp']
+      tests: ['pruebaDest']
     },
 
     // Configuration to be run (and then tested).
     compile_i18n: {
       generate : {
-        files: {
-          './pruebaDest' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
-        },
+        files: [
+          {
+            // expand: true,
+            // cwd:    'pruebaOrig/',
+            src:    ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ],
+            // src:    ['*.js'],
+            // src:    ['*.js', '*.html', '**/*.js', '**/*.html' ],
+            dest:   'pruebaDest/'
+          }
+        ],
+        // files:
+        //   [{
+        //     expand: true,
+        //     cwd:    'pruebaDest/',
+        //     src:    ['**/*.js', '**/*.html' ],
+        //     dest:   'pruebaDest/'
+        // }],
+        // {
+        //   './pruebaDest' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
+        // },
         options : {
           localesFolder: './locales'
           //callbackFunction : function(str, data){console.log(str);}
@@ -78,7 +95,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  grunt.registerTask('compile', ['fetchStrings_i18n','compile_i18n']);
+  grunt.registerTask('compile', ['clean', 'fetchStrings_i18n','compile_i18n']);
   grunt.registerTask('fetch', ['fetchStrings_i18n']);
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.

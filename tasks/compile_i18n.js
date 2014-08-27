@@ -61,6 +61,8 @@ module.exports = function(grunt) {
             }
             
         });  
+        // console.log(this);
+        // console.log(this.files);
         var i18n = new i18nCompiler('en');
         var src = new Array();
         //gather all valid src files.
@@ -80,8 +82,8 @@ module.exports = function(grunt) {
         // iterate each locale folder
         for (var lc = 0; lc < localesFolderDir.length; lc++) {
             var lang = localesFolderDir[lc];
+
             var destLangFolder = path.join(this.files[0].dest, lang);
-            
             //Report progress to console.
             grunt.log.writeln('Compiling language: ' + lang + ' in the folder: ' + destLangFolder);
             
@@ -112,18 +114,28 @@ module.exports = function(grunt) {
                             //Ignore if only translating the Marked As Translated Strings and is falase.
                             if (options.markedOnly && !locales[localeStr].translated){
                                 fileStr = p.replaceAll(fileStr, rawLocaleArr[0], rawLocaleArr[1]);
-                                continue;
+                            }
+                            else{
+                                var tValue = options.callbackFunction(locales[localeStr].translation, localeData, path.extname(fileName) == '.js');
+                                fileStr = p.replaceAll(fileStr, rawLocaleArr[0], tValue);
+                                replacesCount += p.countReplaces(fileStr, rawLocaleArr[1], tValue);
                             }
                             //translated Value.
-                            var tValue = options.callbackFunction(locales[localeStr].translation, localeData, path.extname(fileName) == '.js');
                             
-                            replacesCount += p.countReplaces(fileStr, rawLocaleArr[1], tValue);
-                            fileStr = p.replaceAll(fileStr, rawLocaleArr[0], tValue);
                             
                         }
                     });
-                    fs.ensureDirSync(path.dirname(path.join(destLangFolder, fileName)));
-                    fs.writeFileSync(path.join(destLangFolder, fileName), fileStr);
+                    
+                    var dFile = fileName.split('/');
+                    if (dFile[0] === '.'){
+                        dFile.splice(0,1);
+                    }
+                    dFile.splice(0,1);
+                    var dFilename = dFile.join(path.sep);
+                    console.log(dFilename);
+                    // console.log(path.join(dFile));
+                    fs.ensureDirSync(path.dirname(path.join(destLangFolder, dFilename)));
+                    fs.writeFileSync(path.join(destLangFolder, dFilename), fileStr);
                     
                 }
                 //Report Totals
@@ -133,11 +145,12 @@ module.exports = function(grunt) {
                 grunt.log.writeln('Total of ocurrences replaced: ' + replacesCount);
                 // write a custom js for the client in this lang.
                 if (options.plurals && options.plurals[lang]){
-                    fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.plurals[lang].fewLimit, options.plurals[lang].manyLimit));
+                    fs.writeFileSync(path.join(destLangFolder, 'plurals.js'), i18n.functions(options.plurals[lang].fewLimit, options.plurals[lang].manyLimit));
                 }
                 else{
-                    fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
+                    fs.writeFileSync(path.join(destLangFolder, 'plurals.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
                 }
+                grunt.log.writeln('Writed plural file to: ' + path.join(destLangFolder, 'plurals.js'));
             }
         }
         grunt.log.writeln('Process Complete!!.');    

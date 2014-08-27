@@ -29,12 +29,12 @@
 			return data[varName]
 		}, 
 		p:function(data, varName, offset, plurals){
-			i18n.c(data, varName);
-			var str = data[varName] in plurals ? plurals[data[varName]] : (varName=i18n.lc(data[varName]-offset), varName in plurals?plurals[varName]:plurals.other);
+			this.c(data, varName);
+			var str = data[varName] in plurals ? plurals[data[varName]] : (varName=this.lc(data[varName]-offset), varName in plurals?plurals[varName]:plurals.other);
 			return str
 	  }, 
 		s:function(data, varName, plurals){
-			i18n.c(data,varName);
+			this.c(data,varName);
 			return data[varName] in plurals ? plurals[data[varName]] : plurals.other
 		
 		}
