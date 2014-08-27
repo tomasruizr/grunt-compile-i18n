@@ -132,7 +132,7 @@ module.exports = function(grunt) {
                     }
                     dFile.splice(0,1);
                     var dFilename = dFile.join(path.sep);
-                    console.log(dFilename);
+                    // console.log(dFilename);
                     // console.log(path.join(dFile));
                     fs.ensureDirSync(path.dirname(path.join(destLangFolder, dFilename)));
                     fs.writeFileSync(path.join(destLangFolder, dFilename), fileStr);
@@ -150,7 +150,7 @@ module.exports = function(grunt) {
                 else{
                     fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
                 }
-                grunt.log.writeln('Writed plural file to: ' + path.join(destLangFolder, 'plurals.js'));
+                grunt.log.writeln('Writed plural file to: ' + path.join(destLangFolder, 'i18n.js'));
             }
         }
         grunt.log.writeln('Process Complete!!.');    

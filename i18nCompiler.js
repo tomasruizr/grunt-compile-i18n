@@ -25,73 +25,79 @@
  */
 
 (function ( root ) {
-	//************************************************
-	//Inheritance from Message Format
-	//************************************************
-	var MessageFormat = require('messageformat');
-	function i18nCompiler() {
-		MessageFormat.apply(this, Array.prototype.slice.call(arguments));
-	};
-	i18nCompiler.prototype = new MessageFormat('en');
+  //************************************************
+  //Inheritance from Message Format
+  //************************************************
+  var MessageFormat = require('messageformat');
+  function i18nCompiler() {
+    MessageFormat.apply(this, Array.prototype.slice.call(arguments));
+  };
+  i18nCompiler.prototype = new MessageFormat('en');
 
-	//************************************************
-	//Functino override
-	//************************************************
-	i18nCompiler.prototype.functions = function (fewLimit, manyLimit) {
-		fewLimit = fewLimit|| 10;
-		manyLimit = manyLimit || 20;
+  //************************************************
+  //Functino override
+  //************************************************
+  i18nCompiler.prototype.functions = function (fewLimit, manyLimit) {
+    fewLimit = fewLimit|| 10;
+    manyLimit = manyLimit || 20;
     var str = 
 '(function(G){\n'
-+'	G[\'i18n\']={\n'
-+'		lc:function(n){\n'
-+'			var str;\n'
-+'				if (n===0)\n'
-+'					str = \'zero\';\n'
-+'				else if (n===1)\n'
-+'					str = \'one\';\n'
-+'				else if (n===2)\n'
-+'					str = \'two\';\n'
-+'				else if (n >= 3 && n <'+ fewLimit + ')\n'
-+'					str = \'few\';\n'
-+'				else if (n >= '+ fewLimit + ' && n < '+ manyLimit + ')\n'
-+'					str = \'many\';\n'
-+'				else\n'
-+'					str = \'other\';\n'
-+'				return str;\n'
-+'			},\n'
-+'		c:function(data, varName){\n'
-+'			if(!data) throw new Error("MessageFormat: Data required for \'"+varName+"\'.")\n'
-+'		},\n'
++'  G[\'i18n\']={\n'
++'    lc:function(n){\n'
++'      var str;\n'
++'        if (n===0)\n'
++'          str = \'zero\';\n'
++'        else if (n===1)\n'
++'          str = \'one\';\n'
++'        else if (n===2)\n'
++'          str = \'two\';\n'
++'        else if (n >= 3 && n <'+ fewLimit + ')\n'
++'          str = \'few\';\n'
++'        else if (n >= '+ fewLimit + ' && n < '+ manyLimit + ')\n'
++'          str = \'many\';\n'
++'        else\n'
++'          str = \'other\';\n'
++'        return str;\n'
++'      },\n'
++'    c:function(data, varName){\n'
++'      if(!data) throw new Error("MessageFormat: Data required for \'"+varName+"\'.")\n'
++'    },\n'
 +'\n'
-+'		n:function(data, varName, offset){\n'
-+'			if(isNaN(data[varName]))throw new Error("MessageFormat: \'"+varName+"\' isn\'t a number.");\n'
-+'			return data[varName] - (offset||0)\n'
-+'		}, \n'
-+'		v:function(data, varName){\n'
-+'			this.c(data, varName);\n'
-+'			return data[varName]\n'
-+'		}, \n'
-+'		p:function(data, varName, offset, plurals){\n'
-+'			i18n.c(data, varName);\n'
-+'			var str = data[varName] in plurals ? plurals[data[varName]] : (varName=i18n.lc(data[varName]-offset), varName in plurals?plurals[varName]:plurals.other);\n'
-+'			return str\n'
-+'	  }, \n'
-+'		s:function(data, varName, plurals){\n'
-+'			i18n.c(data,varName);\n'
-+'			return data[varName] in plurals ? plurals[data[varName]] : plurals.other\n'
-+'		\n'
-+'		}\n'
-+'	}\n'
++'    n:function(data, varName, offset){\n'
++'      if(isNaN(data[varName]))throw new Error("MessageFormat: \'"+varName+"\' isn\'t a number.");\n'
++'      return data[varName] - (offset||0)\n'
++'    }, \n'
++'    v:function(data, varName){\n'
++'      this.c(data, varName);\n'
++'      return data[varName]\n'
++'    }, \n'
++'    p:function(data, varName, offset, plurals){\n'
++'      i18n.c(data, varName);\n'
++'      var str = data[varName] in plurals ? plurals[data[varName]] : (varName=i18n.lc(data[varName]-offset), varName in plurals?plurals[varName]:plurals.other);\n'
++'      return str\n'
++'    }, \n'
++'    s:function(data, varName, plurals){\n'
++'      i18n.c(data,varName);\n'
++'      return data[varName] in plurals ? plurals[data[varName]] : plurals.other\n'
++'    \n'
++'    }\n'
++'  }\n'
 +'\n'
 +'}\n'
 +')(this);';
     
-		return str;
-	};
+    return str;
+  };
 
-	
-	i18nCompiler.prototype.precompile = function(ast, datos) {
-		var self = this,
+  i18nCompiler.prototype.compile = function ( message ) {
+    return (new Function(
+      this.functions() +
+      'return ' + this.precompile( this.parse( message ))
+    ))();
+  };
+  
+  i18nCompiler.prototype.precompile = function(ast, datos) {
+    var self = this,
         needOther = false;
 
     function _next ( data ) {
@@ -195,14 +201,14 @@
       }
     }
     return interpMFP( ast );
-	};
+  };
 
-	//************************************************
-	//Module export and preparation for use in server or client side, although this process is going to be
-	//only on server, it is possible for someone else to give it a good use in the client side,
-	//so lefted here anyway.
-	//************************************************
-	if (typeof exports !== 'undefined') {
+  //************************************************
+  //Module export and preparation for use in server or client side, although this process is going to be
+  //only on server, it is possible for someone else to give it a good use in the client side,
+  //so lefted here anyway.
+  //************************************************
+  if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {
       exports = module.exports = i18nCompiler;
     }
