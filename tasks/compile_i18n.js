@@ -145,10 +145,10 @@ module.exports = function(grunt) {
                 grunt.log.writeln('Total of ocurrences replaced: ' + replacesCount);
                 // write a custom js for the client in this lang.
                 if (options.plurals && options.plurals[lang]){
-                    fs.writeFileSync(path.join(destLangFolder, 'plurals.js'), i18n.functions(options.plurals[lang].fewLimit, options.plurals[lang].manyLimit));
+                    fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.plurals[lang].fewLimit, options.plurals[lang].manyLimit));
                 }
                 else{
-                    fs.writeFileSync(path.join(destLangFolder, 'plurals.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
+                    fs.writeFileSync(path.join(destLangFolder, 'i18n.js'), i18n.functions(options.defaultPlurals.fewLimit, options.defaultPlurals.manyLimit));
                 }
                 grunt.log.writeln('Writed plural file to: ' + path.join(destLangFolder, 'plurals.js'));
             }
