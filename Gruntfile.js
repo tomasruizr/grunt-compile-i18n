@@ -1,107 +1,29 @@
 /*
- * grunt-compile-i18n
- * https://github.com/tomasruizr/grunt-compile-i18n
+ * grunt-gjslint
+ * https://github.com/jmendiara/grunt-gjslint
  *
- * Copyright (c) 2014 Tomas Ruiz
+ * Copyright (c) 2013 Javier Mendiara Cañardo
  * Licensed under the MIT license.
  */
 
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    jshint: {
-      all: [
-        'Gruntfile.js',
-        'tasks/*.js',
-        '<%= nodeunit.tests %>'
-      ],
-      options: {
-        jshintrc: '.jshintrc'
-      }
-    },
-
-    // Before generating any new files, remove any previously-created files.
-    clean: {
-      tests: ['pruebaDest']
-    },
-
-    // Configuration to be run (and then tested).
-    compile_i18n: {
-      generate : {
-        files: [
-          {
-            // expand: true,
-            // cwd:    'pruebaOrig/',
-            src:    ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ],
-            // src:    ['*.js'],
-            // src:    ['*.js', '*.html', '**/*.js', '**/*.html' ],
-            dest:   'pruebaDest/'
-          }
-        ],
-        // files:
-        //   [{
-        //     expand: true,
-        //     cwd:    'pruebaDest/',
-        //     src:    ['**/*.js', '**/*.html' ],
-        //     dest:   'pruebaDest/'
-        // }],
-        // {
-        //   './pruebaDest' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
-        // },
-        options : {
-          localesFolder: './locales'
-          //callbackFunction : function(str, data){console.log(str);}
+    i18n: {
+      all: {
+        src: ['example/pruebaOrig/**'],
+        dest: 'example/pruebaDest',
+        options: {
+          languages: ['en', 'es'],
+          localesFolder: 'example/locales'
         }
       }
-
-      
     },
-    fetchStrings_i18n: {
-      generate : {
-        files: {
-          './locales' : ['./pruebaOrig/**/*.js', './pruebaOrig/**/*.html' ]
-        },
-        options : {
-          openLocalizationTag : '<%', 
-          closeLocalizationTag : '%>', 
-          localizationFunction : '__',
-          languages : [
-              'en'
-            ]
-        }
-      
-      }
-
-      
-    },
-
-
-
-    // Unit tests.
-    nodeunit: {
-      tests: ['test/*_test.js']
-    }
-
   });
-
-  // Actually load this plugin's task(s).
   grunt.loadTasks('tasks');
-
-  // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-nodeunit');
-
-  grunt.registerTask('compile', ['clean', 'fetchStrings_i18n','compile_i18n']);
-  grunt.registerTask('fetch', ['fetchStrings_i18n']);
-  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
-  // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'compile_i18n', 'nodeunit']);
-
-  // By default, lint and run all tests.
-  grunt.registerTask('default', ['jshint', 'test']);
+  grunt.registerTask('default', ['i18n']);
 
 };

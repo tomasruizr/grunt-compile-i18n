@@ -1,0 +1,35 @@
+'use strict';
+var I18nCompiler = require('i18nCompiler');
+/*
+ * grunt-gjslint
+ * https://github.com/jmendiara/grunt-gjslint
+ *
+ * Copyright (c) 2013 Javier Mendiara Cañardo
+ * Licensed under the MIT license.
+ */
+module.exports = function (grunt) {
+
+  // Please see the Grunt documentation for more information regarding task
+  // creation: http://gruntjs.com/creating-tasks
+
+  grunt.registerMultiTask('i18n', 'Fetch and Compile i18n from the src files',
+    function () {
+      var opts = this.options({
+        openLocalizationTag: '<%',
+        closeLocalizationTag: '%>',
+        localizationFunction: '__',
+        markedOnly: false,
+        localesFolder: './locales',
+        defaultPlurals: {
+          fewLimit: '10',
+          manyLimit: '20'
+        }
+      });
+      var compiler = new I18nCompiler(opts);
+      this.files.forEach(function(file) {
+        compiler.fetch(file.src, { languages: opts.languages});
+        compiler.compile(file.src, file.dest);
+      });
+    }
+  );
+};
